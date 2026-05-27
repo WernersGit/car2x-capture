@@ -1,0 +1,37 @@
+[Unit]
+Description=Car2X Raspberry Pi Pico Serial Protocol Handler
+Documentation=https://github.com/car2x
+After=car2x-startup.service
+ConditionPathExists=/dev/car2x-pico
+ConditionPathExists=/usr/local/bin/car2x-pico-protocol.py
+
+[Service]
+Type=simple
+User=car2x
+Group=dialout
+
+# Environment files from startup
+EnvironmentFile=-/etc/car2x/environment
+EnvironmentFile=-/run/car2x/car2x.env
+EnvironmentFile=-/run/car2x/pico_device.env
+
+# Runtime script
+ExecStart=/usr/local/bin/car2x-15-pico.sh
+
+# Restart on failure
+Restart=on-failure
+RestartSec=5s
+StartLimitInterval=300s
+StartLimitBurst=5
+
+# Resource limits
+MemoryMax=256M
+CPUQuota=50%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-pico
+
+[Install]
+WantedBy=multi-user.target

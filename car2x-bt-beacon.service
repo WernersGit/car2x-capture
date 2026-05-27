@@ -1,0 +1,15 @@
+[Unit]
+Description=Car2X BLE Beacon Scanner
+After=car2x-startup.service bluetooth.target
+Requires=car2x-startup.service
+
+[Service]
+User=car2x
+Group=car2x
+ExecStart=/usr/bin/python3 /usr/local/bin/car2x-16-bt-beacon.py
+Restart=always
+EnvironmentFile=/etc/car2x/environment
+EnvironmentFile=-/run/car2x/car2x.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Car2X Storage Monitor Timer (Daily @ 02:00 UTC)
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+Unit=car2x-storage-monitor.service
+
+[Install]
+WantedBy=timers.target

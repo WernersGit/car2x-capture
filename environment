@@ -1,0 +1,157 @@
+# Car2X System Environment Variables
+# Central configuration for all services (runtime and setup)
+
+# ============================================================================
+# SYSTEM CONFIGURATION
+# ============================================================================
+TZ=UTC
+
+# Disable GUI (desktop environment) during setup
+# Set to 1 to use multi-user.target (CLI only), 0 to keep X11/Wayland
+CAR2X_DISABLE_GUI=1
+
+# Enable internal WLAN (wlan1) for beacon capture
+# Set to 1 to enable internal WLAN, 0 to disable (dtoverlay=disable-wifi)
+CAR2X_ENABLE_INTERNAL_WLAN=1
+
+# WLAN Regulatory Domain (ISO 3166-1 alpha-2 country code)
+# Required for WLAN interfaces to function (prevents rfkill soft-block)
+# Examples: DE (Germany), US (United States), GB (United Kingdom), FR (France)
+# See: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+CAR2X_WLAN_COUNTRY=DE
+
+# EEPROM PSU_MAX_CURRENT setting (milliamps)
+# Pi 5 hardware maximum: 5000mA
+# Default without config: 3000mA
+# Waveshare 3S UPS: Can cause boot failures at 5000mA espacially at cold temperatures
+# Recommended: 4000mA (reliable with UPS, higher than default)
+CAR2X_PSU_MAX_CURRENT=4000
+
+# USB max current enable in config.txt
+# Set to 1 to add usb_max_current_enable=1 to /boot/firmware/config.txt
+# This allows USB ports to draw more current (up to 1.6 amps total)
+CAR2X_USB_MAX_CURRENT_ENABLE=0
+
+# ============================================================================
+# DIRECTORY STRUCTURE (Runtime & Services)
+# ============================================================================
+CAR2X_HOME=/home/car2x
+CAR2X_CAPTURES_DIR=/home/car2x/captures
+CAR2X_RUNTIME_DIR=/run/car2x
+CAR2X_CONFIG_DIR=/etc/car2x
+
+# ============================================================================
+# SETUP PHASE DIRECTORIES (Kernel & Driver Build)
+# ============================================================================
+CAR2X_WORK_DIR=/home/car2x
+CAR2X_LINUX_BUILD_DIR=/home/car2x/linux
+CAR2X_PATCHES_DIR=/home/car2x/11p-patches
+CAR2X_REGDB_DIR=/home/car2x/wireless-regdb
+CAR2X_CRDA_DIR=/home/car2x/crda
+
+# ============================================================================
+# LOGGING & STATUS (Setup Phase)
+# ============================================================================
+CAR2X_LOG_DIR=/var/log/car2x
+CAR2X_STATUS_DIR=/var/lib/car2x
+
+# ============================================================================
+# SYSTEM SCRIPTS & PATHS
+# ============================================================================
+CAR2X_OCB_SETUP_SCRIPT=/usr/local/bin/car2x-ocb-setup.sh
+CAR2X_UDEV_RULE_FILE=/etc/udev/rules.d/99-car2x-devices.rules
+CAR2X_SYSTEMD_DIR=/usr/lib/systemd/system
+
+# ============================================================================
+# NETWORK INTERFACE & CAPTURE
+# ============================================================================
+CAR2X_CAPTURE_INTERFACE=mon0
+# dumpcap snaplen (bytes to capture per packet)
+# 0 = capture full packet (recommended for Car2X with IEEE 1609.2 security)
+# IEEE 1609.2 secured packets can be 500-1500 bytes (GeoNetworking + Security Layer)
+CAR2X_DUMPCAP_SNAPLEN=0
+CAR2X_DUMPCAP_FILESIZE_MB=100
+
+# ============================================================================
+# GPS CONFIGURATION
+# ============================================================================
+CAR2X_GPS_BAUDRATE=115200
+CAR2X_GPS_DEFAULT_DEVICE=/dev/ttyAMA0
+
+# ============================================================================
+# FEATURE FLAGS (Optional Services)
+# ============================================================================
+# Enable/disable optional data collection services (1=enabled, 0=disabled)
+CAR2X_ENABLE_DUMPCAP=1
+CAR2X_ENABLE_GPS=1
+CAR2X_ENABLE_PICO=0
+CAR2X_ENABLE_BLUETOOTH=1
+CAR2X_ENABLE_WLAN_BEACON=1
+CAR2X_ENABLE_USB_ARCHIVE=1
+
+# ============================================================================
+# CHRONY NTP CONFIGURATION (GPS Time Synchronization)
+# ============================================================================
+CAR2X_GPS_CHRONY_ENABLE=1
+CAR2X_GPS_CHRONY_OFFSET=0.0
+CAR2X_GPS_CHRONY_DELAY=0.2
+
+# ============================================================================
+# BLUETOOTH CONFIGURATION (Internal Bluetooth Beacon Capture)
+# ============================================================================
+CAR2X_BT_INTERFACE=hci0
+CAR2X_BT_SCAN_INTERVAL=5
+
+# ============================================================================
+# WLAN BEACON CONFIGURATION (Internal WLAN Monitor Mode)
+# ============================================================================
+# Internal WLAN interface for beacon capture (separate from wlan0=802.11p)
+CAR2X_WLAN_BEACON_INTERFACE=wlan1
+CAR2X_WLAN_BEACON_CHANNELS="1,6,11"
+# WLAN scan interval in seconds (2 = 0.5 Hz)
+CAR2X_WLAN_SCAN_INTERVAL=2
+
+# ============================================================================
+# PICO CONFIGURATION (Serial Protocol)
+# ============================================================================
+CAR2X_PICO_BAUDRATE=115200
+CAR2X_PICO_PYTHON_SCRIPT=/usr/local/bin/car2x-pico-protocol.py
+
+# ============================================================================
+# STORAGE MONITORING
+# ============================================================================
+CAR2X_STORAGE_WARNING_GB=40
+CAR2X_STORAGE_CRITICAL_GB=45
+
+# ============================================================================
+# USB ARCHIVE / BACKUP STORAGE
+# ============================================================================
+# Mount point for USB archive device (configured in Phase 5)
+CAR2X_ARCHIVE_MOUNT=/mnt/car2x_archive
+
+# ============================================================================
+# KERNEL & DRIVER BUILD CONFIGURATION
+# ============================================================================
+# Linux kernel source URL for 802.11p patches
+CAR2X_KERNEL_VERSION=6.12
+# Interface for OCB mode configuration
+CAR2X_OCB_INTERFACE=wlan0
+
+# ============================================================================
+# Car2X USB Device Constants
+# ============================================================================
+# GPS (GT-U7 / GNSS)
+CAR2X_USB_GPS=/dev/car2x-gps
+CAR2X_USB_GPS_VENDOR_ID=1546
+CAR2X_USB_GPS_MODEL_ID=01a7
+
+# Pico / Controller
+CAR2X_USB_PICO=/dev/car2x-pico
+CAR2X_USB_PICO_VENDOR_ID=2e8a
+CAR2X_USB_PICO_MODEL_ID=0009
+
+# Archive Storage (USB Stick/HDD for trip data archiving)
+# Set by car2x-05-peripheral-setup.sh during Phase 5
+# Symlink created by udev rule (UUID-based matching)
+# Physical device: /dev/sda1, /dev/nvme0n1p1, etc.
+CAR2X_USB_ARCHIVE=/dev/car2x-archive

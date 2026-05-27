@@ -1,0 +1,31 @@
+[Unit]
+Description=Car2X Network Packet Capture (dumpcap - Runtime Service)
+After=car2x-startup.service car2x-ocb-setup.service network-online.target
+Wants=network-online.target
+ConditionPathExists=/home/car2x/captures
+
+[Service]
+Type=simple
+User=car2x
+Group=car2x
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN
+SecureMode=yes
+EnvironmentFile=-/etc/car2x/environment
+EnvironmentFile=/run/car2x/car2x.env
+ExecStartPre=-/bin/rm -f /home/car2x/captures/dumpcap.lock
+ExecStart=/usr/local/bin/car2x-11-dumpcap.sh
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=3
+StartLimitIntervalSec=60
+TimeoutStopSec=15
+KillMode=mixed
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-dumpcap
+MemoryLimit=512M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

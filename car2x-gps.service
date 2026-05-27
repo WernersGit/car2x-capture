@@ -1,0 +1,27 @@
+[Unit]
+Description=Car2X GPS Logger (GT-U7, Auto-Detected - Runtime Service)
+After=car2x-startup.service
+StartLimitIntervalSec=60
+
+[Service]
+Type=simple
+User=car2x
+Group=car2x
+EnvironmentFile=/run/car2x/gps_device.env
+EnvironmentFile=/run/car2x/pico_device.env
+EnvironmentFile=/run/car2x/car2x.env
+EnvironmentFile=-/etc/car2x/environment
+ExecStartPre=-/bin/rm -f /home/car2x/captures/gps.lock
+ExecStart=/usr/local/bin/car2x-12-gps.sh
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=3
+TimeoutStopSec=15
+KillMode=mixed
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-gps
+MemoryMax=128M
+
+[Install]
+WantedBy=multi-user.target

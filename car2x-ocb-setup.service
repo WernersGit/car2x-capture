@@ -1,0 +1,29 @@
+[Unit]
+Description=Car2X 802.11p OCB Mode Setup (wlan0 Initialization)
+Documentation=man:iw(8)
+Before=car2x-startup.service car2x-dumpcap.service
+After=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+# Must run as root for kernel module loading (insmod) and network configuration (iw/ip)
+User=root
+Group=root
+ExecStart=/usr/local/bin/car2x-10_1-ocb-setup.sh
+RemainAfterExit=yes
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-ocb-setup
+
+# Security hardening (limit capabilities to only what's needed)
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_SYS_MODULE
+AmbientCapabilities=CAP_NET_ADMIN CAP_SYS_MODULE
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/log/car2x
+
+[Install]
+WantedBy=multi-user.target

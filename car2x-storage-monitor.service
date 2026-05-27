@@ -1,0 +1,12 @@
+[Unit]
+Description=Car2X Storage Monitoring (Alerts only, no deletion)
+After=car2x-startup.service
+
+[Service]
+Type=oneshot
+User=car2x
+Group=car2x
+ExecStart=/usr/local/bin/car2x-14-storage-monitor.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-storage-monitor

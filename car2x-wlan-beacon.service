@@ -1,0 +1,39 @@
+[Unit]
+Description=Car2X Internal WLAN Beacon Capture
+Documentation=https://github.com/car2x
+After=car2x-startup.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=car2x
+Group=car2x
+
+# Environment files from startup
+EnvironmentFile=-/etc/car2x/environment
+EnvironmentFile=-/run/car2x/car2x.env
+
+# Runtime script
+ExecStart=/usr/local/bin/car2x-17-wlan-beacon.sh
+
+# Capabilities for monitor mode and packet capture
+CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN
+AmbientCapabilities=CAP_NET_RAW CAP_NET_ADMIN
+
+# Restart on failure
+Restart=on-failure
+RestartSec=10s
+StartLimitInterval=300s
+StartLimitBurst=5
+
+# Resource limits
+MemoryMax=256M
+CPUQuota=40%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-wlan-beacon
+
+[Install]
+WantedBy=multi-user.target

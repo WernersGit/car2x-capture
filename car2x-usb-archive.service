@@ -1,0 +1,19 @@
+[Unit]
+Description=Car2X USB Archive (Copy trip to USB ZIP)
+DefaultDependencies=no
+Before=umount.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+User=root
+Group=root
+ExecStart=/usr/local/bin/car2x-20-usb-archive.sh
+TimeoutStartSec=600
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=car2x-usb-archive
+
+[Install]
+WantedBy=umount.target
+
